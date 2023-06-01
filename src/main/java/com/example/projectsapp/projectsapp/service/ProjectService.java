@@ -4,7 +4,7 @@ import com.example.projectsapp.projectsapp.dto.ProjectDTO;
 import com.example.projectsapp.projectsapp.exception.ProjectAssignException;
 import com.example.projectsapp.projectsapp.exception.ProjectNameNotValidException;
 import com.example.projectsapp.projectsapp.exception.ProjectNotFoundException;
-import com.example.projectsapp.projectsapp.exception.ProjectWithdrawException;
+import com.example.projectsapp.projectsapp.exception.ProjectUnassignException;
 import com.example.projectsapp.projectsapp.exception.ProjectsNotLoadedException;
 import com.example.projectsapp.projectsapp.model.Project;
 import com.example.projectsapp.projectsapp.model.User;
@@ -128,12 +128,12 @@ public class ProjectService {
     }
 
     /**
-     * Withdraws given users from a project based on provided user id/s.
+     * Unassigns given users from a project based on provided user id/s.
      * @param id of the project
-     * @param userIds collection that will be withdrawn from a project
+     * @param userIds collection that will be unassigned from a project
      * @return project with the updated user collection
      */
-    public Project withdrawUsersFromProject(long id, List<Long> userIds) {
+    public Project unassignUsersFromProject(long id, List<Long> userIds) {
         var projectOptional = projectRepository.findById(id);
         var users = userRepository.findAllById(userIds);
 
@@ -146,7 +146,7 @@ public class ProjectService {
                 .collect(Collectors.toSet());
 
         if (!currentUsersIds.containsAll(userIds))
-            throw new ProjectWithdrawException(buildNotValidUsersString(currentUsers, userIds));
+            throw new ProjectUnassignException(buildNotValidUsersString(currentUsers, userIds));
 
         if (currentUsers.size() > 0) {
             currentUsers.removeAll(users);

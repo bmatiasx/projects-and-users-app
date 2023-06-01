@@ -29,7 +29,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     public static final String PROJECTS_NOT_LOADED_MESSAGE = "no projects loaded";
     public static final String PROJECT_NAME_NOT_VALID_MESSAGE = "not valid project name";
     public static final String PROJECT_ASSIGN_USERS_NOT_FOUND_MESSAGE = "users id/s [%s] were not found and not added to the project";
-    public static final String PROJECT_WITHDRAW_USERS_NOT_FOUND_MESSAGE = "users id/s [%s] were not found and not withdrawn from the project";
+    public static final String PROJECT_UNASSIGN_USERS_NOT_FOUND_MESSAGE = "users id/s [%s] were not found and not unassign from the project";
 
     @ExceptionHandler(UserIdNotFoundException.class)
     protected ResponseEntity<?> handleApiRequestException(UserIdNotFoundException ex) {
@@ -151,9 +151,9 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return error.toJSON();
     }
 
-    @ExceptionHandler(ProjectWithdrawException.class)
-    protected ResponseEntity<?> handleApiRequestException(ProjectWithdrawException ex) {
-        log.error(String.format("status %s. User Id/s not found and can't be withdrawn from project", HttpStatus.NOT_FOUND));
+    @ExceptionHandler(ProjectUnassignException.class)
+    protected ResponseEntity<?> handleApiRequestException(ProjectUnassignException ex) {
+        log.error(String.format("status %s. User Id/s not found and can't be unassigned from project", HttpStatus.NOT_FOUND));
         ApiError error = new ApiError(
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern(TIME_PATTERN)),
                 HttpStatus.NOT_FOUND.value(),

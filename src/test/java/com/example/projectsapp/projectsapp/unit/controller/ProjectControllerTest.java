@@ -155,7 +155,7 @@ public class ProjectControllerTest {
     }
 
     @Test
-    public void testWithdrawUsers_Success() {
+    public void testUnassignUsers_Success() {
         // Given
         long id = 1L;
         List<Long> userIds = Arrays.asList(1L, 2L);
@@ -163,14 +163,14 @@ public class ProjectControllerTest {
         project.setId(id);
 
         // When
-        when(projectService.withdrawUsersFromProject(id, userIds)).thenReturn(project);
+        when(projectService.unassignUsersFromProject(id, userIds)).thenReturn(project);
 
         // Then
-        ResponseEntity<?> response = projectController.withdrawUsers(id, userIds);
+        ResponseEntity<?> response = projectController.unassignUsers(id, userIds);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(project, response.getBody());
-        verify(projectService, times(1)).withdrawUsersFromProject(id, userIds);
+        verify(projectService, times(1)).unassignUsersFromProject(id, userIds);
     }
 
     @Test

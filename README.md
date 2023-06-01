@@ -733,7 +733,7 @@ Response:
 
 Request:
 ````
-curl --location --request PUT 'localhost:9091/api/v1/projects/9/users/withdraw' \
+curl --location --request PUT 'localhost:9091/api/v1/projects/9/users/unassign' \
 --header 'Content-Type: application/json' \
 --data '[
     345,
@@ -751,29 +751,29 @@ Response:
     "status": 404
 }
 ````
-### Withdraw User/s from Project
-In the opposite way of the assign operation this API will withdraw a given set 
+### Unassign User/s from Project
+In the opposite way of the assign operation this API will unassign a given set 
 of user id/s from a certain project.
 If any of the given id/s are not existing or are not assigned to the project 
 it will return an error with the id/s that are not found in the records or 
 assigned to the project.
 
-To withdraw users successfully they should all exist in the records and be
+To unassign users successfully they should all exist in the records and be
 assigned to a project already. Also the project should be valid.
 
 HttpMethod: PUT
 
-Path: `/api/v1/projects/{projectId}/users/withdraw`
+Path: `/api/v1/projects/{projectId}/users/unassign`
 
 Input:
 - projectId: project unique identifier
-- request body: array of numbers in the format [1, 2,..., n] representing id/s to be withdrawn
+- request body: array of numbers in the format [1, 2,..., n] representing id/s to be unassigned
 
 #### Success
 
 Request:
 ````
-curl --location --request PUT 'localhost:9091/api/v1/projects/9/users/withdraw' \
+curl --location --request PUT 'localhost:9091/api/v1/projects/9/users/unassign' \
 --header 'Content-Type: application/json' \
 --data '[
     11
@@ -806,7 +806,7 @@ Response:
 
 Request:
 ````
-curl --location --request PUT 'localhost:9091/api/v1/projects/9/users/withdraw' \
+curl --location --request PUT 'localhost:9091/api/v1/projects/9/users/unassign' \
 --header 'Content-Type: application/json' \
 --data '[
     1111,

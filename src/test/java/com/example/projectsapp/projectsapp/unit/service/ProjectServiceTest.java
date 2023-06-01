@@ -4,7 +4,7 @@ import com.example.projectsapp.projectsapp.dto.ProjectDTO;
 import com.example.projectsapp.projectsapp.exception.ProjectAssignException;
 import com.example.projectsapp.projectsapp.exception.ProjectNameNotValidException;
 import com.example.projectsapp.projectsapp.exception.ProjectNotFoundException;
-import com.example.projectsapp.projectsapp.exception.ProjectWithdrawException;
+import com.example.projectsapp.projectsapp.exception.ProjectUnassignException;
 import com.example.projectsapp.projectsapp.exception.ProjectsNotLoadedException;
 import com.example.projectsapp.projectsapp.model.Project;
 import com.example.projectsapp.projectsapp.model.User;
@@ -317,7 +317,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testWithdrawUsers_Success() {
+    public void testUnassignUsers_Success() {
         // Given
         long id = 1L;
         List<Long> userIds = List.of(1L);
@@ -346,7 +346,7 @@ public class ProjectServiceTest {
         when(projectRepository.save(project)).thenReturn(project);
 
         // Then
-        Project result = service.withdrawUsersFromProject(id, userIds);
+        Project result = service.unassignUsersFromProject(id, userIds);
 
         assertNotNull(result);
         assertEquals(project, result);
@@ -357,7 +357,7 @@ public class ProjectServiceTest {
     }
 
     @Test
-    public void testWithdrawUsers_noProjectFound_Failed() {
+    public void testUnassignUsers_noProjectFound_Failed() {
         // Given
         long id = 1L;
         List<Long> userIds = Arrays.asList(1L, 2L);
@@ -366,13 +366,13 @@ public class ProjectServiceTest {
         when(projectRepository.findById(id)).thenReturn(Optional.empty());
 
         // Then
-        assertThrows(ProjectNotFoundException.class, () -> service.withdrawUsersFromProject(id, userIds));
+        assertThrows(ProjectNotFoundException.class, () -> service.unassignUsersFromProject(id, userIds));
         verify(projectRepository, times(1)).findById(id);
         verifyNoMoreInteractions(projectRepository);
     }
 
     @Test
-    public void testWithdrawUsers_noUserFound_Failed() {
+    public void testUnassignUsers_noUserFound_Failed() {
         // Given
         long id = 1L;
         List<Long> userIds = Arrays.asList(1L, 2L);
@@ -389,7 +389,7 @@ public class ProjectServiceTest {
         when(projectRepository.findById(id)).thenReturn(Optional.of(existingProject));
 
         // Then
-        assertThrows(ProjectWithdrawException.class, () -> service.withdrawUsersFromProject(id, userIds));
+        assertThrows(ProjectUnassignException.class, () -> service.unassignUsersFromProject(id, userIds));
         verify(projectRepository, times(1)).findById(id);
         verifyNoMoreInteractions(projectRepository);
     }

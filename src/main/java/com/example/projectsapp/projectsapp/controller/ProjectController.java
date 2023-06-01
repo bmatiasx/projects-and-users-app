@@ -88,11 +88,11 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    @PutMapping("/{id}/users/withdraw")
-    public ResponseEntity<?> withdrawUsers(@PathVariable long id, @RequestBody List<Long> userIds) {
-        var project = service.withdrawUsersFromProject(id, userIds);
+    @PutMapping("/{id}/users/unassign")
+    public ResponseEntity<?> unassignUsers(@PathVariable long id, @RequestBody List<Long> userIds) {
+        var project = service.unassignUsersFromProject(id, userIds);
 
-        log.info(String.format("Users withdrawn from project: %s. Response status: %s", project.toString(), HttpStatus.OK));
+        log.info(String.format("Users unassigned from project: %s. Response status: %s", project.toString(), HttpStatus.OK));
 
         return ResponseEntity.ok(project);
     }
