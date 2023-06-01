@@ -1,9 +1,9 @@
 package com.example.projectsapp.projectsapp.service;
 
 import com.example.projectsapp.projectsapp.dto.ProjectDTO;
+import com.example.projectsapp.projectsapp.exception.ProjectAssignException;
 import com.example.projectsapp.projectsapp.exception.ProjectNameNotValidException;
 import com.example.projectsapp.projectsapp.exception.ProjectNotFoundException;
-import com.example.projectsapp.projectsapp.exception.ProjectAssignException;
 import com.example.projectsapp.projectsapp.exception.ProjectWithdrawException;
 import com.example.projectsapp.projectsapp.exception.ProjectsNotLoadedException;
 import com.example.projectsapp.projectsapp.model.Project;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -88,7 +87,25 @@ public class ProjectService {
     }
 
     /**
-     *
+     * Updates a given project with new data.
+     * @param project entity
+     * @return the project with updated fields.
+     */
+    public Project update(Project project, long id) {
+        var projectOptional = projectRepository.findById(id);
+
+        if (projectOptional.isEmpty()) throw new ProjectNotFoundException();
+
+        var updatedProject = projectOptional.get();
+
+        if (project.getName() != null)  updatedProject.setName(project.getName());
+
+        if (project.getDescription() != null) updatedProject.setDescription(project.getDescription());
+
+        return projectRepository.save(updatedProject);
+    }
+
+    /**
      * @param id project id
      * @param userIds list of Ids to be assigned to the project
      * @return project with assigned users
@@ -141,25 +158,6 @@ public class ProjectService {
     }
 
     /**
-     * Updates a given project with new data.
-     * @param project entity
-     * @return the project with updated fields.
-     */
-    public Project update(Project project, long id) {
-        var projectOptional = projectRepository.findById(id);
-
-        if (projectOptional.isEmpty()) throw new ProjectNotFoundException();
-
-        var updatedProject = projectOptional.get();
-
-        if (project.getName() != null)  updatedProject.setName(project.getName());
-
-        if (project.getDescription() != null) updatedProject.setDescription(project.getDescription());
-
-        return projectRepository.save(updatedProject);
-    }
-
-    /**
      * Deletes a project from the database.
      * @param id of the project
      */
@@ -171,16 +169,18 @@ public class ProjectService {
 
         var project = projectOptional.get();
 
-        if (project.getUsers().size() > 0) {
-            for(User u : project.getUsers()) {
-                u.getProjects().remove(u);
-            }
-        }
         project.getUsers().clear();
 
         projectRepository.deleteById(id);
     }
 
+    /**
+     * Builds a string with the id/s that are not existing in the database or assigned to
+     * a given project.
+     * @param users list
+     * @param userIds that represents the id/s to compare
+     * @return sequence of id/s in string format
+     */
     private String buildNotValidUsersString(List<User> users, List<Long> userIds) {
         StringBuilder notAssignedIds = new StringBuilder();
 

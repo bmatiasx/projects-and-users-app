@@ -1,6 +1,5 @@
 package com.example.projectsapp.projectsapp.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.Set;

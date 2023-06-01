@@ -51,9 +51,9 @@ public class UserServiceTest {
 
         // When
         when(repository.save(any(User.class))).thenReturn(user);
-        User savedUser = service.create(user);
 
         // Then
+        User savedUser = service.create(user);
         assertThat(savedUser.getName()).isNotNull();
     }
 
@@ -74,13 +74,16 @@ public class UserServiceTest {
 
     @Test
     public void saveUser_userExists_Failed() {
+        // Given
         var user = new User();
         user.setId(1L);
         user.setName("Charles");
         user.setEmail("cgillian@ymail.com");
 
+        // When
         when(repository.findUserByEmail(any(String.class))).thenReturn(Optional.of(user));
 
+        // Then
         Exception e = assertThrows(UserEmailExistsException.class, () -> service.create(user));
 
         var want = "given email already exists";
@@ -91,11 +94,13 @@ public class UserServiceTest {
 
     @Test
     public void saveUser_blankEmail_Failed() {
+        // Given
         var user = new User();
         user.setId(1L);
         user.setName("Charles");
         user.setEmail("");
 
+        // Then
         Exception e = assertThrows(UserEmailNotValidException.class, () -> service.create(user));
 
         var want = "email format is not valid";
@@ -106,11 +111,13 @@ public class UserServiceTest {
 
     @Test
     public void saveUser_blankName_Failed() {
+        // Given
         var user = new User();
         user.setId(1L);
         user.setName("");
         user.setEmail("cgi@yahoo.com");
 
+        // Then
         Exception e = assertThrows(UserFieldNotValidException.class, () -> service.create(user));
 
         var want = "field name is not valid";
@@ -176,9 +183,9 @@ public class UserServiceTest {
 
         // When
         when(repository.findById(1L)).thenReturn(Optional.of(user));
-        var foundUser = service.findById(1L);
 
         // Then
+        var foundUser = service.findById(1L);
         assertThat(foundUser.getName()).isNotNull();
         assertThat(foundUser.getEmail()).isNotNull();
     }
@@ -195,8 +202,10 @@ public class UserServiceTest {
 
     @Test
     public void findByEmail_Failed() {
+        // Given
         Exception e = assertThrows(UserEmailNotFoundException.class, () -> service.findByEmail("jane@example.com"));
 
+        // Then
         var want = "user email not found";
         var got = e.getMessage();
 
@@ -205,9 +214,11 @@ public class UserServiceTest {
 
     @Test
     public void findByName_Failed() {
+        // Given
         Exception e = assertThrows(UserNameNotFoundException.class, () ->
                 service.findByName("John"));
 
+        // Then
         var want = "user with name=John not found";
         var got = e.getMessage();
 
@@ -310,9 +321,8 @@ public class UserServiceTest {
         // When
         when(repository.findById(userId)).thenReturn(Optional.of(user));
 
-        service.delete(userId);
-
         // Then
+        service.delete(userId);
         verify(repository).findById(userId);
         verify(repository).deleteById(userId);
         assertTrue(user.getProjects().isEmpty());

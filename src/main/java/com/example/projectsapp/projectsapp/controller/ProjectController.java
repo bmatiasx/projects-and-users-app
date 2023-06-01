@@ -35,7 +35,7 @@ public class ProjectController {
     }
 
     @GetMapping("/all")
-    ResponseEntity<?> findAll(Pageable pageable) {
+    public ResponseEntity<?> findAll(Pageable pageable) {
         Page<ProjectDTO> projects = service.findAll(pageable);
 
         log.info(String.format("Project list found. Response status: %s", HttpStatus.OK));
@@ -44,7 +44,7 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<?> findById(@PathVariable long id) {
+    public ResponseEntity<?> findById(@PathVariable long id) {
         Project project = service.findById(id);
 
         log.info(String.format("Project id=%s found. Response status: %s", id, HttpStatus.OK));
@@ -53,7 +53,7 @@ public class ProjectController {
     }
 
     @GetMapping
-    ResponseEntity<?> findByName(@RequestParam String name) {
+    public ResponseEntity<?> findByName(@RequestParam String name) {
         ProjectDTO project = service.findByName(name);
 
         log.info(String.format("Project name=%s found. Response status: %s", name, HttpStatus.OK));
@@ -62,7 +62,7 @@ public class ProjectController {
     }
 
     @PostMapping
-    ResponseEntity<?> create(@RequestBody Project project) {
+    public ResponseEntity<?> create(@RequestBody Project project) {
         var newProject = service.create(project);
 
         log.info(String.format("%s created. Response status: %s", newProject.toString(), HttpStatus.CREATED));
@@ -71,7 +71,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    ResponseEntity<?> update(@RequestBody Project project, @PathVariable long id) {
+    public ResponseEntity<?> update(@RequestBody Project project, @PathVariable long id) {
         var updatedProject = service.update(project, id);
 
         log.info(String.format("Updated: %s. Response status: %s", updatedProject.toString(), HttpStatus.OK));
@@ -80,7 +80,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{projectId}/users/assign")
-    ResponseEntity<?> assignUsersToProject(@PathVariable long projectId, @RequestBody List<Long> userIds) {
+    public ResponseEntity<?> assignUsersToProject(@PathVariable long projectId, @RequestBody List<Long> userIds) {
         var project = service.assignUsersToProject(projectId, userIds);
 
         log.info(String.format("Users assigned to project: %s. Response status: %s", project.toString(), HttpStatus.OK));

@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/all")
-    ResponseEntity<?> findAll(Pageable pageable) {
+    public ResponseEntity<?> findAll(Pageable pageable) {
         Page<User> users  = service.findAll(pageable);
 
         log.info(String.format("User list found. Response status: %s", HttpStatus.OK));
@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @GetMapping
-    ResponseEntity<?> findByName(@RequestParam(value = "name", required = false) String name,
+    public ResponseEntity<?> findByNameAndEmail(@RequestParam(value = "name", required = false) String name,
                                  @RequestParam(value = "email", required = false) String email) {
         User user;
 
@@ -74,7 +74,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    ResponseEntity<?> findById(@PathVariable long id) {
+    public ResponseEntity<?> findById(@PathVariable long id) {
         var user = service.findById(id);
 
         log.info(String.format("User id=%s found. Response status: %s", id, HttpStatus.OK));
@@ -83,7 +83,7 @@ public class UserController {
     }
 
     @PostMapping
-    ResponseEntity<?> create(@RequestBody User user) {
+    public ResponseEntity<?> create(@RequestBody User user) {
         var newUser = service.create(user);
 
         log.info(String.format("%s created. Response status: %s", newUser.toString(), HttpStatus.CREATED));
@@ -92,7 +92,7 @@ public class UserController {
     }
 
     @PutMapping
-    ResponseEntity<?> update(@RequestBody User user) {
+    public ResponseEntity<?> update(@RequestBody User user) {
         var updatedUser = service.update(user);
 
         log.info(String.format("Updated: %s. Response status: %s", updatedUser.toString(), HttpStatus.OK));
