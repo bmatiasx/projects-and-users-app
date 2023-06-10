@@ -50,15 +50,15 @@ public class ProjectServiceTest {
     @Test
     public void saveProject_Success() {
         // Given
-        Project project = new Project();
-        project.setName("JEP-390");
-        project.setDescription("Warnings for Value-Based Classes");
+        String name = "JEP-390";
+        String description = "Warnings for Value-Based Classes";
+        var project = Project.builder().name(name).description(description).build();
 
         // When
         when(projectRepository.save(project)).thenReturn(project);
 
         // Then
-        Project savedProject = service.create(project);
+        var savedProject = service.create(project);
 
         assertNotNull(savedProject);
         assertEquals("JEP-390", savedProject.getName());
@@ -69,8 +69,7 @@ public class ProjectServiceTest {
     @Test
     public void saveProject_nullName_Failed() {
         // Given
-        Project project = new Project();
-        project.setName(null);
+        var project = Project.builder().name(null).build();
 
         // Then
         assertThrows(ProjectNameNotValidException.class, () -> service.create(project));
@@ -80,8 +79,7 @@ public class ProjectServiceTest {
     @Test
     public void saveProject_emptyName_Failed() {
         // Given
-        Project project = new Project();
-        project.setName(" ");
+        var project = Project.builder().name("  ").build();
 
         // Then
         assertThrows(ProjectNameNotValidException.class, () -> service.create(project));
@@ -91,25 +89,25 @@ public class ProjectServiceTest {
     @Test
     public void findById_Success() {
         // Given
-        Long id = 1L;
+        long projectId = 1L;
         String name = "JEP-390";
         String description = "Warnings for Value-Based Classes";
-        Project project = new Project(id, name, description);
+        var project = Project.builder().id(projectId).name(name).description(description).build();
 
         // When
-        when(projectRepository.findById(id)).thenReturn(Optional.of(project));
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
 
         // Then
-        Project actualProject = service.findById(id);
+        var actualProject = service.findById(projectId);
 
         assertEquals(project, actualProject);
-        verify(projectRepository, times(1)).findById(id);
+        verify(projectRepository, times(1)).findById(projectId);
     }
 
     @Test
     public void findById_projectNotFound_Failed() {
         // Given
-        Long projectId = 1L;
+        long projectId = 1L;
         when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
 
         // Then
@@ -120,10 +118,10 @@ public class ProjectServiceTest {
     @Test
     public void testFindByName_Success() {
         // Given
-        long id = 1L;
+        long projectId = 1L;
         String name = "JEP-390";
         String description = "Warnings for Value-Based Classes";
-        Project project = new Project(id, name, description);
+        var project = Project.builder().id(projectId).name(name).description(description).build();
 
         // When
         when(projectRepository.findByName("JEP-390")).thenReturn(Optional.of(project));
@@ -141,12 +139,12 @@ public class ProjectServiceTest {
     @Test
     public void testFindByName_notFound_Failed() {
         // Given
-        String name = "not valid projeect";
-        when(projectRepository.findByName(name)).thenReturn(Optional.empty());
+        String projectName = "not valid projeect";
+        when(projectRepository.findByName(projectName)).thenReturn(Optional.empty());
 
         // Then
-        assertThrows(ProjectNotFoundException.class, () -> service.findByName(name));
-        verify(projectRepository, times(1)).findByName(name);
+        assertThrows(ProjectNotFoundException.class, () -> service.findByName(projectName));
+        verify(projectRepository, times(1)).findByName(projectName);
     }
 
     @Test
@@ -154,15 +152,15 @@ public class ProjectServiceTest {
         // Given
         List<Project> projectList = new ArrayList<>();
 
-        long id1 = 1L;
+        long projectId1 = 1L;
         String name1 = "JEP-390";
         String description1 = "Warnings for Value-Based Classes";
-        Project project1 = new Project(id1, name1, description1);
+        var project1 = Project.builder().id(projectId1).name(name1).description(description1).build();
 
-        long id2 = 2L;
+        long projectId2 = 2L;
         String name2 = "JEP-181";
         String description2 = "Nest-Based Access Control";
-        Project project2 = new Project(id2, name2, description2);
+        var project2 = Project.builder().id(projectId2).name(name2).description(description2).build();
 
         projectList.add(project1);
         projectList.add(project2);
@@ -190,7 +188,7 @@ public class ProjectServiceTest {
         // Given
         List<Project> projectList = new ArrayList<>();
         Pageable pageable = Pageable.ofSize(10);
-        when(projectRepository.findAll(pageable)).thenReturn(new PageImpl<>(projectList, pageable, projectList.size()));
+        when(projectRepository.findAll(pageable)).thenReturn(new PageImpl<>(projectList, pageable, 0));
 
         // Then
         assertThrows(ProjectsNotLoadedException.class, () -> service.findAll(pageable));
@@ -200,28 +198,36 @@ public class ProjectServiceTest {
     @Test
     public void testUpdate_Success() {
         // Given
-        long id = 1L;
+        long projectId = 1L;
         String originalName = "JEP-390";
         String originalDescription = "Warnings for Value-Based Classes";
-        Project originalProject = new Project(id, originalName, originalDescription);
+        var originalProject = Project.builder()
+                .id(projectId)
+                .name(originalName)
+                .description(originalDescription)
+                .build();
 
         // When
-        when(projectRepository.findById(id)).thenReturn(Optional.of(originalProject));
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(originalProject));
 
         String updatedName = "JEP-3903";
         String updatedDescription = "Warnings for Value-Based Classes and JPA Entities";
-        Project updatedProject = new Project(id, updatedName, updatedDescription);
+        var updatedProject = Project.builder()
+                .id(projectId)
+                .name(updatedName)
+                .description(updatedDescription)
+                .build();
 
         when(projectRepository.save(any(Project.class))).thenReturn(updatedProject);
 
         // Then
-        Project result = service.update(updatedProject, id);
+        var result = service.update(updatedProject, projectId);
 
         assertNotNull(result);
-        assertEquals(id, result.getId());
+        assertEquals(projectId, result.getId());
         assertEquals(updatedName, result.getName());
         assertEquals(updatedDescription, result.getDescription());
-        verify(projectRepository, times(1)).findById(id);
+        verify(projectRepository, times(1)).findById(projectId);
         verify(projectRepository, times(1)).save(originalProject);
     }
 
@@ -235,7 +241,11 @@ public class ProjectServiceTest {
 
         String updatedName = "JEP-121";
         String updatedDescription = "Sealed classes";
-        Project updatedProject = new Project(projectId, updatedName, updatedDescription);
+        var updatedProject = Project.builder()
+                .id(projectId)
+                .name(updatedName)
+                .description(updatedDescription)
+                .build();
 
         // Then
         assertThrows(ProjectNotFoundException.class, () -> service.update(updatedProject, projectId));
@@ -247,10 +257,9 @@ public class ProjectServiceTest {
     @Test
     public void testAssignUsers_Success() {
         // Given
-        long id = 1L;
+        long projectId = 1L;
         List<Long> userIds = Arrays.asList(1L, 2L);
-        Project project = new Project();
-        project.setId(id);
+        var project = Project.builder().id(projectId).build();
 
         User user1 = new User();
         user1.setId(1L);
@@ -261,16 +270,16 @@ public class ProjectServiceTest {
         List<User> users = Arrays.asList(user1, user2);
 
         // When
-        when(projectRepository.findById(id)).thenReturn(Optional.of(project));
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
         when(userRepository.findAllById(userIds)).thenReturn(users);
         when(projectRepository.save(project)).thenReturn(project);
 
         // Then
-        Project result = service.assignUsersToProject(id, userIds);
+        var result = service.assignUsersToProject(projectId, userIds);
 
         assertNotNull(result);
         assertEquals(users, result.getUsers());
-        verify(projectRepository, times(1)).findById(id);
+        verify(projectRepository, times(1)).findById(projectId);
         verify(userRepository, times(1)).findAllById(userIds);
         verify(projectRepository, times(1)).save(project);
     }
@@ -278,16 +287,16 @@ public class ProjectServiceTest {
     @Test
     public void testAssignUsers_projectNotFound_Failed() {
         // Given
-        long id = 1L;
+        long projectId = 1L;
         List<Long> userIds = Arrays.asList(1L, 2L);
 
         // When
-        when(projectRepository.findById(id)).thenReturn(Optional.empty());
+        when(projectRepository.findById(projectId)).thenReturn(Optional.empty());
 
         // Then
-        assertThrows(ProjectNotFoundException.class, () -> service.assignUsersToProject(id, userIds));
+        assertThrows(ProjectNotFoundException.class, () -> service.assignUsersToProject(projectId, userIds));
 
-        verify(projectRepository, times(1)).findById(id);
+        verify(projectRepository, times(1)).findById(projectId);
         verifyNoMoreInteractions(userRepository);
         verifyNoMoreInteractions(projectRepository);
     }
@@ -295,23 +304,22 @@ public class ProjectServiceTest {
     @Test
     public void testAssignUsers_usersNotFound_Failed() {
         // Given
-        long id = 1L;
+        long projectId = 1L;
         List<Long> userIds = Arrays.asList(1L, 2L);
-        Project project = new Project();
-        project.setId(id);
+        var project = Project.builder().id(projectId).build();
 
         User user = new User();
         user.setId(1L);
         List<User> users = List.of(user);
 
         // When
-        when(projectRepository.findById(id)).thenReturn(Optional.of(project));
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
         when(userRepository.findAllById(userIds)).thenReturn(users);
 
         // Then
-        assertThrows(ProjectAssignException.class, () -> service.assignUsersToProject(id, userIds));
+        assertThrows(ProjectAssignException.class, () -> service.assignUsersToProject(projectId, userIds));
 
-        verify(projectRepository, times(1)).findById(id);
+        verify(projectRepository, times(1)).findById(projectId);
         verify(userRepository, times(1)).findAllById(userIds);
         verifyNoMoreInteractions(projectRepository);
     }
@@ -319,10 +327,9 @@ public class ProjectServiceTest {
     @Test
     public void testUnassignUsers_Success() {
         // Given
-        long id = 1L;
+        long projectId = 1L;
         List<Long> userIds = List.of(1L);
-        Project project = new Project();
-        project.setId(id);
+        var project = Project.builder().id(projectId).build();
 
         User projectUser1 = new User();
         projectUser1.setId(1L);
@@ -341,17 +348,17 @@ public class ProjectServiceTest {
         List<User> existingUsers = List.of(existingUser1);
 
         // When
-        when(projectRepository.findById(id)).thenReturn(Optional.of(project));
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
         when(userRepository.findAllById(userIds)).thenReturn(existingUsers);
         when(projectRepository.save(project)).thenReturn(project);
 
         // Then
-        Project result = service.unassignUsersFromProject(id, userIds);
+        var result = service.unassignUsersFromProject(projectId, userIds);
 
         assertNotNull(result);
         assertEquals(project, result);
         assertEquals(result.getUsers().size(), 1);
-        verify(projectRepository, times(1)).findById(id);
+        verify(projectRepository, times(1)).findById(projectId);
         verify(userRepository, times(1)).findAllById(userIds);
         verify(projectRepository, times(1)).save(project);
     }
@@ -381,7 +388,7 @@ public class ProjectServiceTest {
         List<User> userList = new ArrayList<>();
         userList.add(user);
 
-        Project existingProject = new Project();
+        var existingProject = new Project();
         existingProject.setId(id);
         existingProject.setUsers(userList);
 
@@ -397,11 +404,10 @@ public class ProjectServiceTest {
     @Test
     public void deleteProject_Success() {
         // Given
-        long id = 1L;
-        Project project = new Project();
-        project.setId(id);
-        User user1 = new User();
-        User user2 = new User();
+        long projectId = 1L;
+        var project = Project.builder().id(projectId).build();
+        var user1 = new User();
+        var user2 = new User();
 
         List<User> userList = new ArrayList<>();
         userList.add(user1);
@@ -414,12 +420,26 @@ public class ProjectServiceTest {
         user2.setProjects(projects);
 
         // When
-        when(projectRepository.findById(id)).thenReturn(Optional.of(project));
+        when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
 
         // Then
-        service.delete(id);
+        service.delete(projectId);
 
+        verify(projectRepository, times(1)).findById(projectId);
+        verify(projectRepository, times(1)).deleteById(projectId);
+    }
+
+    @Test
+    public void deleteProject_noProjectFound_Failed() {
+        // Given
+        long id = 1L;
+
+        // When
+        when(projectRepository.findById(id)).thenReturn(Optional.empty());
+
+        // Then
+        assertThrows(ProjectNotFoundException.class, () -> service.delete(id));
         verify(projectRepository, times(1)).findById(id);
-        verify(projectRepository, times(1)).deleteById(id);
+        verifyNoMoreInteractions(projectRepository);
     }
 }

@@ -7,7 +7,6 @@ import com.example.projectsapp.projectsapp.exception.UserFieldNotValidException;
 import com.example.projectsapp.projectsapp.exception.UserIdNotFoundException;
 import com.example.projectsapp.projectsapp.exception.UserNameNotFoundException;
 import com.example.projectsapp.projectsapp.exception.UsersNotCreatedException;
-import com.example.projectsapp.projectsapp.model.Project;
 import com.example.projectsapp.projectsapp.model.User;
 import com.example.projectsapp.projectsapp.repository.UserRepository;
 import com.example.projectsapp.projectsapp.service.UserService;
@@ -22,7 +21,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -44,10 +42,10 @@ public class UserServiceTest {
     @Test
     public void saveUser_Success() {
         // Given
-        var user = new User();
-        user.setId(1L);
-        user.setName("Charles");
-        user.setEmail("cgillian@ymail.com");
+        long userId = 1L;
+        String name = "Charles";
+        String email = "cgillian@ymail.com";
+        var user = User.builder().id(userId).name(name).email(email).build();
 
         // When
         when(repository.save(any(User.class))).thenReturn(user);
@@ -59,10 +57,10 @@ public class UserServiceTest {
 
     @Test
     public void saveUser_notValidEmail_Failed() {
-        var user = new User();
-        user.setId(1L);
-        user.setName("Charles");
-        user.setEmail("cgillianymail.com");
+        long userId = 1L;
+        String name = "Charles";
+        String email = "cgillianymail.com";
+        var user = User.builder().id(userId).name(name).email(email).build();
 
         Exception e = assertThrows(UserEmailNotValidException.class, () -> service.create(user));
 
@@ -75,10 +73,10 @@ public class UserServiceTest {
     @Test
     public void saveUser_userExists_Failed() {
         // Given
-        var user = new User();
-        user.setId(1L);
-        user.setName("Charles");
-        user.setEmail("cgillian@ymail.com");
+        long userId = 1L;
+        String name = "Charles";
+        String email = "cgillian@ymail.com";
+        var user = User.builder().id(userId).name(name).email(email).build();
 
         // When
         when(repository.findUserByEmail(any(String.class))).thenReturn(Optional.of(user));
@@ -95,10 +93,10 @@ public class UserServiceTest {
     @Test
     public void saveUser_blankEmail_Failed() {
         // Given
-        var user = new User();
-        user.setId(1L);
-        user.setName("Charles");
-        user.setEmail("");
+        long userId = 1L;
+        String name = "Charles";
+        String email = "";
+        var user = User.builder().id(userId).name(name).email(email).build();
 
         // Then
         Exception e = assertThrows(UserEmailNotValidException.class, () -> service.create(user));
@@ -112,10 +110,10 @@ public class UserServiceTest {
     @Test
     public void saveUser_blankName_Failed() {
         // Given
-        var user = new User();
-        user.setId(1L);
-        user.setName("");
-        user.setEmail("cgi@yahoo.com");
+        long userId = 1L;
+        String name = "";
+        String email = "cgillian@ymail.com";
+        var user = User.builder().id(userId).name(name).email(email).build();
 
         // Then
         Exception e = assertThrows(UserFieldNotValidException.class, () -> service.create(user));
@@ -129,15 +127,15 @@ public class UserServiceTest {
     @Test
     public void findAll_Success() {
         // Given
-        var user1 = new User();
-        user1.setId(1L);
-        user1.setName("Charles");
-        user1.setEmail("cgillian@ymail.com");
+        long userId1 = 1L;
+        String name1 = "Charles";
+        String email1 = "cgillian@ymail.com";
+        var user1 = User.builder().id(userId1).name(name1).email(email1).build();
 
-        var user2 = new User();
-        user2.setId(2L);
-        user2.setName("Hanna");
-        user2.setEmail("hbeckam@gmail.com");
+        long userId2 = 1L;
+        String name2 = "Hanna";
+        String email2 = "hbeckam@gmail.com";
+        var user2 = User.builder().id(userId2).name(name2).email(email2).build();
 
         var userList = Arrays.asList(user1, user2);
         Pageable pageable = Pageable.ofSize(10).withPage(0);
@@ -176,10 +174,10 @@ public class UserServiceTest {
     @Test
     public void findById_Success() {
         // Given
-        var user = new User();
-        user.setId(1L);
-        user.setName("Charles");
-        user.setEmail("cgillian@ymail.com");
+        long userId = 1L;
+        String name = "Charles";
+        String email = "cgillian@ymail.com";
+        var user = User.builder().id(userId).name(name).email(email).build();
 
         // When
         when(repository.findById(1L)).thenReturn(Optional.of(user));
@@ -228,17 +226,15 @@ public class UserServiceTest {
     @Test
     public void updateUser_Success() {
         // Given
-        var existingUser = new User();
-        existingUser.setId(1L);
-        existingUser.setName("Charles");
-        existingUser.setEmail("cgillian@ymail.com");
+        long userId = 1L;
+        String name = "Charles";
+        String email = "cgillian@ymail.com";
+        var existingUser = User.builder().id(userId).name(name).email(email).build();
 
-        var updatedUser = new User();
-        updatedUser.setId(1L);
-        updatedUser.setName("Charlie");
-        updatedUser.setEmail("charliegillian@ymail.com");
+        String updatedEmail = "charliegillian@ymail.com";
+        var updatedUser = User.builder().id(userId).name(name).email(updatedEmail).build();
 
-        // When
+                // When
         when(repository.findById(existingUser.getId())).thenReturn(Optional.of(existingUser));
         when(repository.save(existingUser)).thenReturn(updatedUser);
 
@@ -253,10 +249,10 @@ public class UserServiceTest {
     @Test
     public void updateUser_userNotExists_Failed() {
         // Given
-        var user = new User();
-        user.setId(1L);
-        user.setName("Charles");
-        user.setEmail("cgillian@ymail.com");
+        long userId = 1L;
+        String name = "Charles";
+        String email = "cgillian@ymail.com";
+        var user = User.builder().id(userId).name(name).email(email).build();
 
         // When
         when(repository.findById(user.getId())).thenReturn(Optional.empty());
@@ -270,10 +266,10 @@ public class UserServiceTest {
     @Test
     public void updateUser_notValidEmail_Failed() {
         // Given
-        var user = new User();
-        user.setId(1L);
-        user.setName("Charles");
-        user.setEmail("cgillianymail.com");
+        long userId = 1L;
+        String name = "Charles";
+        String email = "cgillianymail.com";
+        var user = User.builder().id(userId).name(name).email(email).build();
 
         // When
         when(repository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -285,10 +281,10 @@ public class UserServiceTest {
     @Test
     public void updateUser_notValidName_Failed() {
         // Given
-        var user = new User();
-        user.setId(1L);
-        user.setName("");
-        user.setEmail("cgillian@ymail.com");
+        long userId = 1L;
+        String name = "";
+        String email = "cgillian@ymail.com";
+        var user = User.builder().id(userId).name(name).email(email).build();
 
         // When
         when(repository.findById(user.getId())).thenReturn(Optional.of(user));
@@ -301,20 +297,9 @@ public class UserServiceTest {
     public void userDelete_Success() {
         // Given
         long userId = 1L;
-        var user = new User();
-        user.setId(userId);
-        user.setName("Charles");
-        user.setEmail("cgillian@ymail.com");
-
-        var p1 = new Project();
-        p1.setId(1L);
-        p1.setName("Project Lambda");
-        p1.setUsers(List.of(user));
-
-        var p2 = new Project();
-        p2.setId(1L);
-        p2.setName("Project Equinox");
-        p2.setUsers(List.of(user));
+        String name = "Charles";
+        String email = "cgillian@ymail.com";
+        var user = User.builder().id(userId).name(name).email(email).build();
 
         user.setProjects(new HashSet<>());
 
