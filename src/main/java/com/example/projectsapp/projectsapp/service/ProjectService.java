@@ -54,7 +54,7 @@ public class ProjectService {
     }
 
     /**
-     *
+     * Retrieves all the registered projects paged accordingly.
      * @param pageable indicates the pagination settings. If not provided default page size is 10
      *                 and current-page is 0.
      * @return a page with all the projects in the database according to the pagination
@@ -72,7 +72,7 @@ public class ProjectService {
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), projectDTOS.size());
 
-        return new PageImpl<>(projectDTOS.subList(start, end), pageable,projectDTOS.size());
+        return new PageImpl<>(projectDTOS.subList(start, end), pageable, projectDTOS.size());
     }
 
     /**
@@ -106,6 +106,7 @@ public class ProjectService {
     }
 
     /**
+     * Assigns userId/s to a given project.
      * @param id project id
      * @param userIds list of Ids to be assigned to the project
      * @return project with assigned users
