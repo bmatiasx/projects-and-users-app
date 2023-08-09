@@ -27,7 +27,7 @@ import static com.example.projectsapp.projectsapp.exception.ApiExceptionHandler.
 
 @RestController
 @Slf4j
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/users") // TODO update path same way than ProjectController.java
 public class UserController {
     private final UserService service;
 
@@ -36,7 +36,7 @@ public class UserController {
         this.service = userService;
     }
 
-    @GetMapping(value = "/all")
+    @GetMapping(value = "/all") // TODO update path same way than ProjectController.java
     public ResponseEntity<?> findAll(Pageable pageable) {
         Page<User> users  = service.findAll(pageable);
 
@@ -73,7 +73,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id}")// TODO update path same way than ProjectController.java
     public ResponseEntity<?> findById(@PathVariable long id) {
         var user = service.findById(id);
 
@@ -82,7 +82,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping
+    @PostMapping// TODO update path same way than ProjectController.java
     public ResponseEntity<?> create(@RequestBody User user) {
         var newUser = service.create(user);
 
@@ -91,7 +91,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @PutMapping
+    @PutMapping// TODO update path same way than ProjectController.java
     public ResponseEntity<?> update(@RequestBody User user) {
         var updatedUser = service.update(user);
 
@@ -100,7 +100,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}") // TODO update path same way than ProjectController.java
     public ResponseEntity<?> delete(@PathVariable long id) {
         service.delete(id);
 

@@ -25,7 +25,7 @@ import static com.example.projectsapp.projectsapp.util.Util.convertToResponse;
 
 @RestController
 @Slf4j
-@RequestMapping("/api/v1/projects")
+@RequestMapping("/v1")
 public class ProjectController {
     private final ProjectService service;
 
@@ -34,7 +34,7 @@ public class ProjectController {
         this.service = projectService;
     }
 
-    @GetMapping("/all")
+    @GetMapping("/projects")
     public ResponseEntity<?> findAll(Pageable pageable) {
         Page<ProjectDTO> projects = service.findAll(pageable);
 
@@ -43,7 +43,7 @@ public class ProjectController {
         return ResponseEntity.ok(convertToResponse(projects, "projects"));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/projects/{id}")
     public ResponseEntity<?> findById(@PathVariable long id) {
         Project project = service.findById(id);
 
@@ -52,8 +52,8 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    @GetMapping
-    public ResponseEntity<?> findByName(@RequestParam String name) {
+    @GetMapping// TODO add criteria search by name or email
+    public ResponseEntity<?> findByName(@RequestParam(required = false) String name) {
         ProjectDTO project = service.findByName(name);
 
         log.info(String.format("Project name=%s found. Response status: %s", name, HttpStatus.OK));
@@ -61,7 +61,7 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    @PostMapping
+    @PostMapping("/projects")
     public ResponseEntity<?> create(@RequestBody Project project) {
         var newProject = service.create(project);
 
@@ -70,7 +70,7 @@ public class ProjectController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newProject);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/projects/{id}")
     public ResponseEntity<?> update(@RequestBody Project project, @PathVariable long id) {
         var updatedProject = service.update(project, id);
 
@@ -79,7 +79,7 @@ public class ProjectController {
         return ResponseEntity.ok(updatedProject);
     }
 
-    @PutMapping("/{projectId}/users/assign")
+    @PutMapping("/projects/{projectId}/users/assign") // TODO add a single put mapping for both assign/unassign use cases
     public ResponseEntity<?> assignUsersToProject(@PathVariable long projectId, @RequestBody List<Long> userIds) {
         var project = service.assignUsersToProject(projectId, userIds);
 
@@ -88,7 +88,7 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    @PutMapping("/{id}/users/unassign")
+    @PutMapping("/projects/{id}/users/unassign")
     public ResponseEntity<?> unassignUsers(@PathVariable long id, @RequestBody List<Long> userIds) {
         var project = service.unassignUsersFromProject(id, userIds);
 
@@ -97,7 +97,7 @@ public class ProjectController {
         return ResponseEntity.ok(project);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/projects/{id}")
     public ResponseEntity<?> delete(@PathVariable long id) {
         service.delete(id);
 
