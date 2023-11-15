@@ -27,7 +27,7 @@ import static com.example.projectsapp.projectsapp.exception.ApiExceptionHandler.
 
 @RestController
 @Slf4j
-@RequestMapping("/api/v1/users") // TODO update path same way than ProjectController.java
+@RequestMapping("/v1/users")
 public class UserController {
     private final UserService service;
 
@@ -36,7 +36,7 @@ public class UserController {
         this.service = userService;
     }
 
-    @GetMapping(value = "/all") // TODO update path same way than ProjectController.java
+    @GetMapping
     public ResponseEntity<?> findAll(Pageable pageable) {
         Page<User> users  = service.findAll(pageable);
 
@@ -45,7 +45,7 @@ public class UserController {
         return ResponseEntity.ok(Util.convertToResponse(users, "users"));
     }
 
-    @GetMapping
+    @GetMapping(params = {"name", "email"})
     public ResponseEntity<?> findByNameAndEmail(@RequestParam(value = "name", required = false) String name,
                                  @RequestParam(value = "email", required = false) String email) {
         User user;
@@ -70,10 +70,9 @@ public class UserController {
             return new ApiError(date, HttpStatus.BAD_REQUEST.value(),
                     HttpStatus.BAD_REQUEST.name(), NO_PARAMS_PROVIDED_MESSAGE).toJSON();
         }
-
     }
 
-    @GetMapping("/{id}")// TODO update path same way than ProjectController.java
+    @GetMapping("/{id}")
     public ResponseEntity<?> findById(@PathVariable long id) {
         var user = service.findById(id);
 
@@ -82,7 +81,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PostMapping// TODO update path same way than ProjectController.java
+    @PostMapping
     public ResponseEntity<?> create(@RequestBody User user) {
         var newUser = service.create(user);
 
@@ -91,7 +90,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
 
-    @PutMapping// TODO update path same way than ProjectController.java
+    @PutMapping
     public ResponseEntity<?> update(@RequestBody User user) {
         var updatedUser = service.update(user);
 
@@ -100,7 +99,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @DeleteMapping("/{id}") // TODO update path same way than ProjectController.java
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable long id) {
         service.delete(id);
 

@@ -240,7 +240,7 @@ If there are no existing projects in the database will return an error.
 
 HttpMethod: GET
 
-Path: `/api/v1/users/all?page={pageNumber}&size={pageSize}`
+Path: `/api/v1/users?page={pageNumber}&size={pageSize}`
 
 Input:
 - pageNumber: page index to retrieve (optional)
@@ -249,7 +249,7 @@ Input:
 #### Success
 Request:
 ````
-curl --location 'localhost:9091/api/v1/users/all?page=0&size=5'
+curl --location 'localhost:9091/api/v1/users?page=0&size=5'
 ```` 
 Response:
 
@@ -293,7 +293,7 @@ Response:
 Request:
 
 ````
-curl --location 'localhost:9091/api/v1/projects/all'
+curl --location 'localhost:9091/api/v1/projects'
 ```` 
 Response:
 
