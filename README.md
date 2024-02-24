@@ -6,7 +6,7 @@ The service will provide REST APIs to create Users and add them to a given
 Project.
 List Users and Projects. Also create, update and delete Projects and users.
 The implementation was done with a relational in-memory database H2 with Spring 
-Data JPA persistence framework. 
+Data JPA persistence framework.
 
 The database has preloaded data that will be created at application startup for
 the sake of testing and start playing around.
