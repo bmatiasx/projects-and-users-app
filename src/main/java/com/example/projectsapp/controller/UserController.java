@@ -39,7 +39,7 @@ public class UserController {
     public ResponseEntity<?> findAll(Pageable pageable) {
         Page<User> users  = service.findAll(pageable);
 
-        log.info(String.format("User list found. Response status: %s", HttpStatus.OK));
+        log.info("User list found. Response status: {}", HttpStatus.OK);
 
         return ResponseEntity.ok(Util.convertToResponse(users, "users"));
     }
@@ -52,19 +52,19 @@ public class UserController {
         if (name != null) {
             user = service.findByName(name);
 
-            log.info(String.format("User name=%s found. Response status: %s", name, HttpStatus.OK));
+            log.info("User name={} found. Response status: {}", name, HttpStatus.OK);
 
             return ResponseEntity.ok(user);
         } else if (email != null) {
             user = service.findByEmail(email);
 
-            log.info(String.format("User email=%s found. Response status: %s", email, HttpStatus.OK));
+            log.info("User email={} found. Response status: {}", email, HttpStatus.OK);
 
             return ResponseEntity.ok(user);
         } else {
             String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern(Util.TIME_PATTERN));
 
-            log.error(String.format("No valid params provided. Response status: %s", HttpStatus.BAD_REQUEST));
+            log.error("No valid params provided. Response status: {}", HttpStatus.BAD_REQUEST);
 
             return new ApiError(date, HttpStatus.BAD_REQUEST.value(),
                     HttpStatus.BAD_REQUEST.name(), ApiExceptionHandler.NO_PARAMS_PROVIDED_MESSAGE).toJSON();
@@ -75,7 +75,7 @@ public class UserController {
     public ResponseEntity<?> findById(@PathVariable long id) {
         var user = service.findById(id);
 
-        log.info(String.format("User id=%s found. Response status: %s", id, HttpStatus.OK));
+        log.info("User id={} found. Response status: {}", id, HttpStatus.OK);
 
         return ResponseEntity.ok(user);
     }
@@ -84,7 +84,7 @@ public class UserController {
     public ResponseEntity<?> create(@RequestBody User user) {
         var newUser = service.create(user);
 
-        log.info(String.format("%s created. Response status: %s", newUser.toString(), HttpStatus.CREATED));
+        log.info("{} created. Response status: {}", newUser.toString(), HttpStatus.CREATED);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
@@ -93,7 +93,7 @@ public class UserController {
     public ResponseEntity<?> update(@RequestBody User user) {
         var updatedUser = service.update(user);
 
-        log.info(String.format("Updated: %s. Response status: %s", updatedUser.toString(), HttpStatus.OK));
+        log.info("Updated: {}. Response status: {}", updatedUser.toString(), HttpStatus.OK);
 
         return ResponseEntity.ok(updatedUser);
     }
@@ -102,7 +102,7 @@ public class UserController {
     public ResponseEntity<?> delete(@PathVariable long id) {
         service.delete(id);
 
-        log.info(String.format("User with id=%s deleted. Response status: %s", id, HttpStatus.OK));
+        log.info("User with id={} deleted. Response status: {}", id, HttpStatus.OK);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
