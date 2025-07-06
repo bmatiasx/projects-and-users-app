@@ -17,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,9 +38,11 @@ public class ProjectService {
      * @param id of the project
      * @return project entity
      */
-    public Project findById(Long id) {
-        return projectRepository.findById(id)
+    public ProjectDTO findById(Long id) {
+        Project project = projectRepository.findById(id)
                 .orElseThrow(ProjectNotFoundException::new);
+
+        return new ProjectDTO(project.getId(), project.getName(), project.getDescription());
     }
 
     /**
@@ -116,7 +120,7 @@ public class ProjectService {
 
         if (projectOptional.isEmpty()) throw new ProjectNotFoundException();
 
-        var users = userRepository.findAllById(userIds);
+        var users = new HashSet<>(userRepository.findAllById(userIds));
 
         if (userIds.size() != users.size())
             throw new ProjectAssignException(buildNotValidUsersString(users, userIds));
@@ -136,7 +140,7 @@ public class ProjectService {
      */
     public Project unassignUsersFromProject(long id, List<Long> userIds) {
         var projectOptional = projectRepository.findById(id);
-        var users = userRepository.findAllById(userIds);
+        var users = new HashSet<>(userRepository.findAllById(userIds));
 
         if (projectOptional.isEmpty()) throw new ProjectNotFoundException();
 
@@ -182,7 +186,7 @@ public class ProjectService {
      * @param userIds that represents the id/s to compare
      * @return sequence of id/s in string format
      */
-    private String buildNotValidUsersString(List<User> users, List<Long> userIds) {
+    private String buildNotValidUsersString(Set<User> users, List<Long> userIds) {
         StringBuilder notAssignedIds = new StringBuilder();
 
         List<Long> actual = users.stream()

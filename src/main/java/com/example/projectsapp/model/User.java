@@ -1,7 +1,7 @@
 package com.example.projectsapp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,7 +35,7 @@ public class User {
     @Column(name = "email", nullable = false)
     private String email;
 
-    @JsonIgnore
+    @JsonBackReference("project-user")
     @ManyToMany(mappedBy = "users")
     private Set<Project> projects;
 

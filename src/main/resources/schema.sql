@@ -1,3 +1,9 @@
+drop table if exists project_by_user;
+
+drop table if exists users;
+
+drop table if exists projects;
+
 create table if not exists users (
    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
    name VARCHAR(255),

@@ -100,7 +100,9 @@ public class ProjectServiceTest {
         // Then
         var actualProject = service.findById(projectId);
 
-        assertEquals(project, actualProject);
+        assertEquals(project.getId(), actualProject.getId());
+        assertEquals(project.getName(), actualProject.getName());
+        assertEquals(project.getDescription(), actualProject.getDescription());
         verify(projectRepository, times(1)).findById(projectId);
     }
 
@@ -267,11 +269,11 @@ public class ProjectServiceTest {
         User user2 = new User();
         user2.setId(2L);
 
-        List<User> users = Arrays.asList(user1, user2);
+        Set<User> users = Set.of(user1, user2);
 
         // When
         when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
-        when(userRepository.findAllById(userIds)).thenReturn(users);
+        when(userRepository.findAllById(userIds)).thenReturn(new ArrayList<>(users));
         when(projectRepository.save(project)).thenReturn(project);
 
         // Then
@@ -310,11 +312,11 @@ public class ProjectServiceTest {
 
         User user = new User();
         user.setId(1L);
-        List<User> users = List.of(user);
+        Set<User> users = Set.of(user);
 
         // When
         when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
-        when(userRepository.findAllById(userIds)).thenReturn(users);
+        when(userRepository.findAllById(userIds)).thenReturn(new ArrayList<>(users));
 
         // Then
         assertThrows(ProjectAssignException.class, () -> service.assignUsersToProject(projectId, userIds));
@@ -340,16 +342,16 @@ public class ProjectServiceTest {
         User existingUser1 = new User();
         existingUser1.setId(1L);
 
-        List<User> projectUsers = new ArrayList<>();
+        Set<User> projectUsers = new HashSet<>();
         projectUsers.add(projectUser1);
         projectUsers.add(projectUser2);
 
         project.setUsers(projectUsers);
-        List<User> existingUsers = List.of(existingUser1);
+        Set<User> existingUsers = Set.of(existingUser1);
 
         // When
         when(projectRepository.findById(projectId)).thenReturn(Optional.of(project));
-        when(userRepository.findAllById(userIds)).thenReturn(existingUsers);
+        when(userRepository.findAllById(userIds)).thenReturn(new ArrayList<>(existingUsers));
         when(projectRepository.save(project)).thenReturn(project);
 
         // Then
@@ -385,7 +387,7 @@ public class ProjectServiceTest {
         List<Long> userIds = Arrays.asList(1L, 2L);
         User user = new User();
         user.setId(id);
-        List<User> userList = new ArrayList<>();
+        Set<User> userList = new HashSet<>();
         userList.add(user);
 
         var existingProject = new Project();
@@ -409,7 +411,7 @@ public class ProjectServiceTest {
         var user1 = new User();
         var user2 = new User();
 
-        List<User> userList = new ArrayList<>();
+        Set<User> userList = new HashSet<>();
         userList.add(user1);
         userList.add(user2);
         project.setUsers(userList);

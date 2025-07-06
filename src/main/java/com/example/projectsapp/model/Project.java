@@ -1,7 +1,7 @@
 package com.example.projectsapp.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -19,7 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import java.util.List;
+import java.util.Set;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Data
@@ -39,16 +39,15 @@ public class Project {
     @Column(name = "description")
     private String description;
 
-    @JsonIgnoreProperties("projects")
+    @JsonManagedReference("project-user")
     @JsonInclude(Include.NON_NULL)
     @ManyToMany
     @JoinTable(
             name = "project_by_user",
             joinColumns = @JoinColumn(name = "project_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
-
     )
-    private List<User> users;
+    private Set<User> users;
 
     public Project(long id, String name, String description) {
         this.id = id;

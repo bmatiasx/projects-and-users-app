@@ -65,18 +65,17 @@ public class ProjectControllerTest {
     public void testFindById_Success() {
         // Given
         long id = 1L;
-        Project project = new Project();
-        project.setId(id);
+        ProjectDTO projectDTO = new ProjectDTO(id, "name", "description");
 
         // When
-        when(projectService.findById(id)).thenReturn(project);
+        when(projectService.findById(id)).thenReturn(projectDTO);
 
         // Then
         ResponseEntity<?> response = projectController.findById(id);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(project, response.getBody());
+        assertEquals(projectDTO, response.getBody());
         verify(projectService, times(1)).findById(id);
     }
 

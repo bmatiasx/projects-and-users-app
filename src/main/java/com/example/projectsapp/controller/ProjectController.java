@@ -44,8 +44,8 @@ public class ProjectController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable long id) {
-        Project project = service.findById(id);
+    public ResponseEntity<ProjectDTO> findById(@PathVariable long id) {
+        ProjectDTO project = service.findById(id);
 
         log.info(String.format("Project id=%s found. Response status: %s", id, HttpStatus.OK));
 
